@@ -7,7 +7,6 @@ const NFT_STORAGE_TOKEN = process.env.NEXT_PUBLIC_NFT_DOT_STORAGE_API_KEY;
 const client = new NFTStorage({ token: NFT_STORAGE_TOKEN });
 const nftDotStorage = async (img) => {
   console.log("CALLED  NFT DOT STORAGE");
-  console.log("NFT_STORAGE_TOKEN",NFT_STORAGE_TOKEN);
   try {
     const metadata = await client.store({
       attributes: [
