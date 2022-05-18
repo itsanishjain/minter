@@ -15,8 +15,8 @@ const nftDotStorage = async (img) => {
         { trait_type: "Face", value: "Smile" },
       ],
       description:
-        "A collection Clever Programmer NFT. A portion of sales and royalties gets donated to Charity ME, where they raise money for good causes by bribing celebrities.",
-      name: "Clever",
+        "A collection. A portion of sales and royalties gets donated to Charity ME, where they raise money for good causes by bribing celebrities.",
+      name: "NEVER",
       image: img,
     });
     return metadata;
@@ -24,7 +24,7 @@ const nftDotStorage = async (img) => {
   } catch (error) {
     console.log("NFT.PORT UPLOAD ERROR", error);
     return "ERROR_NFT_DOT_STORAGE";
-    
+
   }
 };
 

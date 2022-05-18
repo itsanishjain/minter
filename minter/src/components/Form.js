@@ -1,19 +1,13 @@
-import React from "react";
 import { useState } from "react";
-import {
-  pinataUploadImage,
-  pinataUploadMetadata,
-  nftDotStorage,
-} from "../../utils";
+import toast from "react-hot-toast";
 import Loader from "./Loader";
 
-export default function Form({setMetadataURLIPFS}) {
+import { nftDotStorage } from "../../utils";
+
+export default function Form({ setMetadataURLIPFS }) {
   const [loading, setLoading] = useState(false);
-
-  const [formValues, setFormValues] = useState({
-    imageUrl: "",
-  });
-
+  const [formValues, setFormValues] = useState({ imageUrl: "" });
+  const [imageSrc, setImageSrc] = useState();
   const [formErrors, setFormErrors] = useState({});
 
   const validateForm = (_formValues) => {
@@ -24,13 +18,18 @@ export default function Form({setMetadataURLIPFS}) {
     return errors;
   };
 
-  // create a function which set the values of form field
-  const handleOnChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value });
-  };
+  const onImageChange = (e) => {
+    const reader = new FileReader();
+    reader.onload = function (onLoadEvent) {
+      setImageSrc(onLoadEvent.target.result);
+    };
 
-  const handleFileInput = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.files[0] });
+    if (e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
+    setFormValues((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.files[0],
+    }));
+
   };
 
   const handleSubmit = async (e) => {
@@ -38,7 +37,6 @@ export default function Form({setMetadataURLIPFS}) {
     let _errors = validateForm(formValues);
     setFormErrors(_errors);
     if (Object.keys(_errors).length === 0) {
-      console.log("NO ERRORs");
       setLoading(true);
       const metadata = await nftDotStorage(formValues.imageUrl);
       console.log("METADATA", metadata.url);
@@ -49,28 +47,38 @@ export default function Form({setMetadataURLIPFS}) {
   };
 
   return (
-    <div className="max-w-lg mx-auto mt-8 border border-red-600 p-4">
+    <div className="max-w-lg mx-auto mt-8 space-y-2 p-8 bg-white rounded-lg sm:flex  sm:py-4 sm:space-x-6 border-2">
       <form>
-        <p className="text-red-800 font-bold text-md">
-          {formErrors.imageUrl && "Please upload an image"}
-        </p>
-        <input
-          className="mt-2"
-          type="file"
-          name={Object.keys(formValues)[0]}
-          onChange={handleFileInput}
-        ></input>
+        {formErrors.imageUrl && toast.error('Please upload an image')}
+        {
+          !imageSrc && <input
+            className="cursor-pointer"
+            type="file"
+            name={Object.keys(formValues)[0]}
+            onChange={(e) => { onImageChange(e) }}
+          >
+          </input>
+        }
+
+        {imageSrc && <img src={imageSrc} className="bg-red-800" />}
+
+        {
+          imageSrc &&
+          (
+            !loading ?
+              (
+                <button
+                  className="mt-2 border border-blue-500 p-4 rounded-lg text-black"
+                  onClick={handleSubmit}
+                >
+                  UPLOAD
+                </button>
+              ) :
+              <Loader />
+          )
+        }
       </form>
-      {!loading ? (
-        <button
-          className="mt-2 border border-blue-500 p-4 rounded-lg"
-          onClick={handleSubmit}
-        >
-          UPLOAD
-        </button>
-      ) : (
-        <Loader />
-      )}
     </div>
+
   );
 }

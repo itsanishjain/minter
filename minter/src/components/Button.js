@@ -3,11 +3,11 @@ import React from "react";
 export default function Button({ text, onClick }) {
   return (
     <div
-      className="mt-8 max-w-sm mx-auto rounded-xl bg-orange-500 text-center font-semibold text-lg"
+      className="mt-8 max-w-sm mx-auto rounded-xl bg-pink-500 text-center font-semibold text-lg"
       onClick={onClick}
     >
       <span
-        className="block px-2 py-4 rounded-xl bg-orange-700 
+        className="block px-2 py-4 rounded-xl bg-pink-700 
       text-xl text-white -translate-y-2 active:-translate-y-1 cursor-pointer"
       >
         {text}

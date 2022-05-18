@@ -2,9 +2,7 @@ import { Contract, providers, utils } from "ethers";
 import Head from "next/head";
 import React, { useEffect, useRef, useState } from "react";
 import Web3Modal from "web3modal";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Card from "../src/components/Card";
+import toast, { Toaster } from 'react-hot-toast';
 import Button from "../src/components/Button";
 import Loader from "../src/components/Loader";
 
@@ -38,21 +36,17 @@ export default function Home() {
 
         const tx = await NFTeeContract.mintNFT(metadataURLIPFS);
 
-
         setLoading(true);
         await tx.wait();
 
-
-
-
         setLoading(false);
         setNftUrl(true);
-        toast("You successfully minted a web3Rocks!");
+        toast.success("You successfully minted a Masterpiece!");
       } catch (err) {
         console.error(err);
       }
     } else {
-      toast("Please upload an image");
+      toast.error("Please upload an image");
     }
   };
 
@@ -85,7 +79,7 @@ export default function Home() {
     const web3Provider = new providers.Web3Provider(provider);
     const { chainId } = await web3Provider.getNetwork();
     if (chainId !== 4) {
-      window.alert("Change the network to Rinkeby");
+      toast.error("Change the network to Rinkeby")
       throw new Error("Change network to Rinkeby");
     }
 
@@ -96,8 +90,6 @@ export default function Home() {
     return web3Provider;
   };
 
-  console.log("setMetadataURLIPFS!!##################333!", metadataURLIPFS);
-
   useEffect(() => {
     if (!walletConnected) {
       web3ModalRef.current = new Web3Modal({
@@ -106,7 +98,7 @@ export default function Home() {
         disableInjectedProvider: false,
       });
       connectWallet();
-      // getTokenIdsMinted();
+
     }
   }, [walletConnected]);
 
@@ -115,34 +107,32 @@ export default function Home() {
       return <Button text={"Connect your wallet"} onClick={connectWallet} />;
     if (loading) return <Loader />;
     else {
-      return <Button onClick={publicMint} text="Public Mint 🚀" />;
+      return <Button onClick={publicMint} text="Mint 🚀" />;
     }
   };
 
   return (
     <div className="m-2">
       <Head>
-        <title>Web3 Rocks</title>
-        <meta name="description" content="Whitelist-Dapp" />
+        <title>Create NFTS</title>
+        <meta name="description" content="Create your moments as NFTs" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <ToastContainer />
+      <Toaster />
 
-      <Card
-        name="Welcome to Clever Programmer!"
-        designation={`Its an NFT Minter for clever developers `}
-        imageUrl="rocket.svg"
-      />
       {nftUrl && (
-        <div className="text-center mt-4">
+
+        <div className="text-center text-white m-4">
           <a
-            className="text-lg font-medium  text-black cursor-pointer underline"
+            className="text-lg font-medium  text-white cursor-pointer underline"
             href={`https://testnets.opensea.io/assets/${NFT_CONTRACT_ADDRESS}/${1}`}
           >
-            Here is your NFT
+            Here is your NFT ➡️
           </a>
         </div>
       )}
+
+      <p className="text-white text-center text-2xl pt-2">Make NFTs Like Pros</p>
 
       <Form setMetadataURLIPFS={setMetadataURLIPFS} />
 
